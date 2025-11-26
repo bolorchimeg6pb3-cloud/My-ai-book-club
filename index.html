@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Номын Клуб — Neumorphic</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
+    :root{
+      --bg:#e9eef6;
+      --surface:#edf2f8;
+      --soft-shadow: 14px 14px 30px rgba(162,176,196,0.35), -10px -10px 24px rgba(255,255,255,0.9);
+      --accent:#5b6cff;
+      --muted:#6b7280;
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background:var(--bg);
+      color:#0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:28px;
+    }
+
+    .wrap{max-width:1100px;margin:0 auto}
+
+    header{
+      background:linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
+      padding:40px;
+      border-radius:24px;
+      box-shadow: var(--soft-shadow);
+      display:flex;align-items:center;gap:20px;
+    }
+
+    .brand{
+      flex:1;
+    }
+    .brand h1{margin:0;font-size:28px;letter-spacing:-0.5px}
+    .brand p{margin:6px 0 0;color:var(--muted)}
+
+    nav{display:flex;gap:12px}
+    nav a{
+      padding:10px 14px;border-radius:12px;text-decoration:none;color:var(--muted);font-weight:600;
+      background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(235,239,250,0.6));
+      box-shadow: inset 6px 6px 12px rgba(162,176,196,0.25), inset -6px -6px 12px rgba(255,255,255,0.9);
+    }
+    nav a.cta{background:linear-gradient(180deg,var(--accent),#3f4bff);color:white;box-shadow: 6px 6px 20px rgba(91,108,255,0.25)}
+
+    main{display:grid;grid-template-columns:1fr 420px;gap:22px;margin-top:24px}
+
+    .panel{
+      background:var(--surface);
+      padding:20px;border-radius:var(--radius);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .panel h2{margin:0 0 12px;color:var(--accent)}
+
+    /* Book list */
+    .book-list{display:flex;flex-direction:column;gap:12px}
+    .book{padding:14px;border-radius:12px;background:linear-gradient(180deg, #fff, #f5f8ff);display:flex;justify-content:space-between;align-items:center;box-shadow: inset 6px 6px 14px rgba(162,176,196,0.12), inset -6px -6px 14px rgba(255,255,255,0.85)}
+    .book .meta{color:var(--muted);font-size:13px}
+
+    /* Chatbot */
+    #chatbot-button{position:fixed;right:28px;bottom:28px;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);box-shadow: var(--soft-shadow);cursor:pointer;font-size:26px}
+    #chatbot-box{position:fixed;right:28px;bottom:110px;width:380px;border-radius:18px;overflow:hidden;background:var(--surface);box-shadow:var(--soft-shadow);display:flex;flex-direction:column}
+    #chatbot-header{padding:14px 16px;background:linear-gradient(90deg,var(--accent),#3f4bff);color:white;font-weight:600}
+    #chatbot-messages{padding:12px;flex:1;overflow-y:auto;background:linear-gradient(180deg,#eef3ff,transparent)}
+    .msg{max-width:78%;padding:10px 12px;border-radius:12px;margin-bottom:10px;font-size:14px}
+    .user{margin-left:auto;background:linear-gradient(180deg,#dfe7ff,#d4ddff);box-shadow:6px 6px 14px rgba(91,108,255,0.08)}
+    .bot{margin-right:auto;background:linear-gradient(180deg,#ffffff,#f0f3ff);box-shadow:6px 6px 20px rgba(160,174,196,0.06)}
+    #chatbot-input{border:none;padding:14px 12px;font-size:14px;outline:none;background:transparent;border-top:1px solid rgba(0,0,0,0.04)}
+
+    /* Right column widgets */
+    .widget{display:flex;flex-direction:column;gap:10px}
+    .small{font-size:13px;color:var(--muted)}
+
+    footer{text-align:center;margin-top:24px;color:var(--muted)}
+
+    @media(max-width:980px){main{grid-template-columns:1fr}#chatbot-box{right:18px;width:92%}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <h1>📚 AI Номын Клуб</h1>
+        <p>Унших зуршлыг хөгжүүлэх — Neumorphic premium дизайн</p>
+      </div>
+      <nav>
+        <a href="#books">Номнууд</a>
+        <a href="#discussion">Хэлэлцүүлэг</a>
+        <a class="cta" href="#join">Нэгдэх</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>Сарын онцлох ном</h2>
+        <div class="book-list" id="bookList"></div>
+
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <input id="bookTitle" placeholder="Номын нэр" style="flex:1;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,#fff,#f5f8ff)" />
+          <button id="addBookBtn" style="padding:12px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent),#3f4bff);color:white;cursor:pointer">Нэмэх</button>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <h2>AI Тоноглогууд</h2>
+        <div class="widget">
+          <div>
+            <div class="small">Номноос хураангуй:</div>
+            <textarea id="summInput" rows="4" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,#fff,#f5f8ff)"></textarea>
+            <button id="summBtn" style="margin-top:8px;padding:10px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent),#3f4bff);color:white;cursor:pointer">3 өгүүлбэр хураангуй</button>
+            <div id="summOutput" class="small" style="margin-top:8px;background:transparent;min-height:40px"></div>
+          </div>
+
+          <div>
+            <div class="small">Ном санал болгох:</div>
+            <input id="prefInput" placeholder="Сонирхол (жишээ: сэтгэл зүй)" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,#fff,#f5f8ff)" />
+            <button id="recBtn" style="margin-top:8px;padding:10px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent),#3f4bff);color:white;cursor:pointer">Санал авах</button>
+            <div id="recOutput" class="small" style="margin-top:8px;min-height:40px"></div>
+          </div>
+
+          <div>
+            <div class="small">Экспорт / Нөөцлөлт</div>
+            <button id="exportBtn" style="width:100%;padding:10px;border-radius:12px;border:none;background:linear-gradient(90deg,#6b7280,#9aa0ff);color:white;cursor:pointer">JSON татах</button>
+            <a id="downloadLink" style="display:block;margin-top:8px"></a>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>© 2025 AI Номын Клуб</footer>
+  </div>
+
+  <!-- Chatbot -->
+  <div id="chatbot-button">💬</div>
+  <div id="chatbot-box" class="hidden" role="dialog" aria-label="Chatbot">
+    <div id="chatbot-header">AI Номын Клуб</div>
+    <div id="chatbot-messages"></div>
+    <input id="chatbot-input" placeholder="Асуултаа бичээрэй..." />
+  </div>
+
+  <script>
+    const LS_KEY = 'ai_bookclub_data_v2';
+    function getState(){ const raw = localStorage.getItem(LS_KEY); if(!raw) return {books:[],posts:[]}; try{return JSON.parse(raw)}catch(e){return {books:[],posts:[]}}; }
+    function saveState(s){localStorage.setItem(LS_KEY,JSON.stringify(s));}
+    const bookListEl=document.getElementById('bookList'), addBookBtn=document.getElementById('addBookBtn'), bookTitleInput=document.getElementById('bookTitle');
+    function renderBooks(){ const state=getState(); bookListEl.innerHTML=''; if(state.books.length===0){bookListEl.innerHTML='<div class="small">Одоогоор ном бүртгэгдээгүй байна.</div>'; return;} state.books.forEach((b,i)=>{ const el=document.createElement('div'); el.className='book'; el.innerHTML=`<div><strong>${escape(b.title)}</strong><div class="meta small">${escape(b.author||'')}</div></div><div><button data-i="${i}" class="delBtn" style="border-radius:10px;padding:8px 10px;border:none;background:transparent;cursor:pointer">Устгах</button></div>`; bookListEl.appendChild(el);});}
+    addBookBtn.addEventListener('click',()=>{ const t=bookTitleInput.value.trim(); if(!t) return alert('Номын нэр оруулна уу'); const st=getState(); st.books.push({title:t}); saveState(st); bookTitleInput.value=''; renderBooks(); });
+    bookListEl.addEventListener('click',(e)=>{ if(e.target.classList.contains('delBtn')){ const i=Number(e.target.dataset.i); const s=getState(); s.books.splice(i,1); saveState(s); renderBooks(); }});
+
+    // AI demo
+    document.getElementById('summBtn').addEventListener('click',()=>{ const txt=document.getElementById('summInput').value.trim(); const out=document.getElementById('summOutput'); if(!txt) return out.textContent='Текст оруулна уу.'; const sents=txt.match(/[^.!?\\n]+[.!?]?/g)||[txt]; const scores=sents.map(s=>s.length); const idx=scores.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).slice(0,3).map(x=>x[1]).sort((a,b)=>a-b); out.textContent=idx.map(i=>sents[i].trim()).join(' '); });
+    const sampleRecs=[{title:'Atomic Habits',author:'James Clear',tags:['дадал']},{title:'Thinking, Fast and Slow',author:'Daniel Kahneman',tags:['сэтгэл зүй']},{title:'Deep Work',author:'Cal Newport',tags:['үйлчилгээ']},{title:'The Psychology of Money',author:'Morgan Housel',tags:['санхүү']}];
+    document.getElementById('recBtn').addEventListener('click',()=>{ const q=document.getElementById('prefInput').value.trim().toLowerCase(); const out=document.getElementById('recOutput'); if(!q) return out.textContent='Сэдвээ бичнэ үү.'; const words=q.split(/\\s+/); const scored=sampleRecs.map(r=>{let sc=0; words.forEach(w=>{ if(r.title.toLowerCase().includes(w)) sc+=3; if(r.author.toLowerCase().includes(w)) sc+=2; r.tags.forEach(t=>{ if(t.includes(w)) sc+=4; }); }); return {...r,score:sc};}).filter(r=>r.score>0).sort((a,b)=>b.score-a.score); out.textContent=(scored.length?scored:sampleRecs.slice(0,3)).map(r=>`${r.title} — ${r.author}`).join('\n'); });
+    document.getElementById('exportBtn').addEventListener('click',()=>{ const data=JSON.stringify(getState(),null,2); const blob=new Blob([data],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.getElementById('downloadLink'); a.href=url; a.download='ai_bookclub_data.json'; a.textContent='Татах: ai_bookclub_data.json'; });
+
+    // Chatbot
+    const cbBtn=document.getElementById('chatbot-button'), cbBox=document.getElementById('chatbot-box'), cbMsgs=document.getElementById('chatbot-messages'), cbInput=document.getElementById('chatbot-input');
+    cbBtn.addEventListener('click',()=>{ cbBox.classList.toggle('hidden'); cbInput.focus(); });
+    function appendMsg(text,cls){ const d=document.createElement('div'); d.className='msg '+cls; d.textContent=text; cbMsgs.appendChild(d); cbMsgs.scrollTop=cbMsgs.scrollHeight; }
+    cbInput.addEventListener('keypress',(e)=>{ if(e.key==='Enter' && cbInput.value.trim()!==''){ const q=cbInput.value.trim(); appendMsg(q,'user'); cbInput.value=''; appendMsg('Асуултаа боловсруулж байна...','bot'); const HF_API_KEY='YOUR_HF_API_KEY'; const MODEL='gpt2'; fetch(`https://api-inference.huggingface.co/models/${MODEL}`,{ method:'POST', headers:{'Authorization':`Bearer ${HF_API_KEY}`,'Content-Type':'application/json'}, body: JSON.stringify({inputs:q,options:{wait_for_model:true}}) }).then(r=>r.json()).then(data=>{ const last=Array.from(cbMsgs.querySelectorAll('.bot')).pop(); if(last) last.remove(); const answer=(Array.isArray(data) && data[0]?.generated_text)?data[0].generated_text:(data.error||'Хариуг авч чадсангүй.'); appendMsg(answer,'bot'); }).catch(err=>{ const last=Array.from(cbMsgs.querySelectorAll('.bot')).pop(); if(last) last.remove(); appendMsg('HuggingFace API-тай холбогдож чадсангүй. API түлхүүрээ шалгана уу.','bot'); }); } });
+    function escape(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+    renderBooks();
+  </script>
+</body>
+</html>
